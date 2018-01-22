@@ -1,6 +1,6 @@
 
 public class Main {
 	public static void main(String[] args) {
-		System.out.println("This is a commit");
+		System.out.println("This is a message");
 	}
 }
