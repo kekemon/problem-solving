@@ -1,7 +1,5 @@
 import java.util.Scanner;
 
-import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
-
 public class Calculator {
 	
 	public static double evalExp(String exp){
@@ -22,50 +20,50 @@ public class Calculator {
 		String operand2 = "0";
 		int len = exp.length();
 		boolean isExpression = false;
-		for (int i = 0; i < len; i++) {
+		for (int i = len - 1; i >=0; i--) {
 			char ch = exp.charAt(i);
 			if(!isExpression && !isDigit(ch)){
 				isExpression = true;
 			}
 			if(ch == '('){
 				bracketCount++;
-				operand1 += ch;
+				operand1 = ch + operand1;
 			}else if(ch == ')'){
 				bracketCount--;
-				operand1 += ch;
+				operand1 = ch + operand1;
 			}else if (ch == '+'){
 				if(bracketCount == 0){
 					operand1 = exp.substring(0, i);
 					operand2 = exp.substring(i+1, len);
 					//System.out.println("IN add operand1 "+operand1 + "  operand2 " +operand2);
-					double ret1 = divMul(operand1);
-					double ret2 = divMul(operand2);
+					double ret1 = mul(operand1);
+					double ret2 = mul(operand2);
 					//System.out.println("ret1 "+ret1 + "  ret2 "+ret2);
 					return ret1 + ret2;
 				}else{
-					operand1 += ch;
+					operand1 = ch + operand1;
 				}
 			}else if (ch == '-'){
 				if(bracketCount == 0){
 					operand1 = exp.substring(0, i);
 					operand2 = exp.substring(i+1, len);
 					//System.out.println("IN Sub operand1 "+operand1 + "  operand2 " +operand2);
-					double ret1 = divMul(operand1);
-					double ret2 = divMul(operand2);
+					double ret1 = mul(operand1);
+					double ret2 = mul(operand2);
 					//System.out.println("ret1 "+ret1 + "  ret2 "+ret2);
 					return ret1 - ret2;
 				}else{
-					operand1 += ch;
+					operand1 = ch + operand1;
 				}
 			}else{
-				operand1 += ch;
+				operand1 = ch + operand1;
 			}
 		}
 		if(!isExpression) return Integer.parseInt(operand1);
-		return divMul(operand1);
+		return mul(operand1);
 	}
 
-	private static double divMul(String exp) {
+	private static double mul(String exp) {
 		//System.out.println("divMul");
 		int bracketCount = 0;
 		String operand1 = "";
@@ -84,13 +82,34 @@ public class Calculator {
 					operand1 = exp.substring(0, i);
 					operand2 = exp.substring(i+1, len);
 					//System.out.println("IN mul operand1 "+operand1 + "  operand2 " +operand2);
-					double ret1 = bracket(operand1);
-					double ret2 = bracket(operand2);
+					double ret1 = div(operand1);
+					double ret2 = div(operand2);
 					//System.out.println("ret1 "+ret1 + "  ret2 "+ret2);
 					return ret1 * ret2;
 				}else{
 					operand1 += ch;
 				}
+			}else{
+				operand1 += ch;
+			}
+		}
+		return div(operand1);
+	}
+	
+	private static double div(String exp) {
+		//System.out.println("divMul");
+		int bracketCount = 0;
+		String operand1 = "";
+		String operand2 = "0";
+		int len = exp.length();
+		for (int i = len-1; i >=0; i--) {
+			char ch = exp.charAt(i);
+			if(ch == '('){
+				bracketCount++;
+				operand1 = ch + operand1;
+			}else if(ch == ')'){
+				bracketCount--;
+				operand1 = ch + operand1;
 			}else if (ch == '/'){
 				if(bracketCount == 0){
 					operand1 = exp.substring(0, i);
@@ -101,10 +120,10 @@ public class Calculator {
 					//System.out.println("ret1 "+ret1 + "  ret2 "+ret2);
 					return ret1 / ret2;
 				}else{
-					operand1 += ch;
+					operand1 = ch + operand1;
 				}
 			}else{
-				operand1 += ch;
+				operand1 = ch + operand1;
 			}
 		}
 		return bracket(operand1);
