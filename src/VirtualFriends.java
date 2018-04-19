@@ -2,42 +2,42 @@ import java.util.Scanner;
 
 public class VirtualFriends {
 	
-	static class Data{
-		Data parent;
-		int rank;
-		String value;
+	static class Person{
+		Person leader;
+		int teamSize;
+		String name;
 		
-		public Data(String value) {
-			this.value = value;
-			this.rank = 1;
-			this.parent = this;
+		public Person(String name) {
+			this.name = name;
+			this.teamSize = 1;
+			this.leader = this;
 		}
 		
-		public Data getParent() {
-			if(equals(parent)){
-				return parent;
+		public Person getLeader() {
+			if(equals(leader)){
+				return leader;
 			}
-			return parent.getParent();
+			return leader.getLeader();
 		}
 
-		public void setParent(Data parent) {
-			this.parent = parent;
+		public void setLeader(Person leader) {
+			this.leader = leader;
 		}
 
-		public int getRank() {
-			return rank;
+		public int getTeamSize() {
+			return teamSize;
 		}
 
-		public void setRank(int rank) {
-			this.rank = rank;
+		public void setTeamSize(int teamSize) {
+			this.teamSize = teamSize;
 		}
 
-		public String getValue() {
-			return value;
+		public String getName() {
+			return name;
 		}
 
-		public void setValue(String value) {
-			this.value = value;
+		public void setName(String name) {
+			this.name = name;
 		}
 
 		@Override
@@ -45,18 +45,18 @@ public class VirtualFriends {
 			if(object instanceof String){
 				String _value = (String)object;
 				return isEqual(_value);
-			}else if(object instanceof Data){
-				Data data = (Data)object;
-				return isEqual(data.getValue());
+			}else if(object instanceof Person){
+				Person data = (Person)object;
+				return isEqual(data.getName());
 			}
 			return false;
 		}
 
 		private boolean isEqual(String _value) {
-			if(value.length() != _value.length()) return false;
+			if(name.length() != _value.length()) return false;
 			else{
 				for (int i = 0; i < _value.length(); i++) {
-					if(value.charAt(i) != _value.charAt(i)) return false;
+					if(name.charAt(i) != _value.charAt(i)) return false;
 				}
 				return true;
 			}
@@ -64,59 +64,59 @@ public class VirtualFriends {
 		
 	}
 	
-	static int MAX_DATA;
-	static Data map[];
+	static int MAX_PERSON;
+	static Person friendMap[];
 	
-	private static Data getValueByKey(String str){
+	private static Person getValueByKey(String key){
 		int hashKey = 5381;
-		char[] strch = str.toCharArray();
+		char[] strch = key.toCharArray();
 		for (char c : strch) {
-			hashKey = ((hashKey<<5) + hashKey+ c) % MAX_DATA;
+			hashKey = ((hashKey<<5) + hashKey+ c) % MAX_PERSON;
 		}
 		
-		if(map[hashKey] == null) return map[hashKey] = new Data(str);
+		if(friendMap[hashKey] == null) return friendMap[hashKey] = new Person(key);
 		else{
-			if(map[hashKey].equals(str)) return map[hashKey];
+			if(friendMap[hashKey].equals(key)) return friendMap[hashKey];
 			else{
 				while(true){
-					hashKey = (hashKey + 1) % MAX_DATA;
-					if(map[hashKey] == null) return map[hashKey] = new Data(str);
-					else if(map[hashKey].equals(str)) return map[hashKey];
+					hashKey = (hashKey + 1) % MAX_PERSON;
+					if(friendMap[hashKey] == null) return friendMap[hashKey] = new Person(key);
+					else if(friendMap[hashKey].equals(key)) return friendMap[hashKey];
 				}
 			}
 		}
 	}
 	
 	public static void init(int size){
-		MAX_DATA = size * 2;
-		map = new Data[MAX_DATA];
+		MAX_PERSON = size * 2;
+		friendMap = new Person[MAX_PERSON];
 	}
 	
 	
 	public static void makeSet(String key1, String key2){
-		Data data1 = getValueByKey(key1);
-		Data data2 = getValueByKey(key2);
+		Person data1 = getValueByKey(key1);
+		Person data2 = getValueByKey(key2);
 		
-		Data parent1 = data1.getParent();
-		Data parent2 = data2.getParent();
+		Person parent1 = data1.getLeader();
+		Person parent2 = data2.getLeader();
 		
 		if( parent1 == parent2){
 			return;
 		}
 		
-		if(parent1.rank >= parent2.rank){
-			parent1.rank = parent1.rank + parent2.rank; 
-			parent2.parent = parent1;
+		if(parent1.getTeamSize() >= parent2.getTeamSize()){
+			parent1.setTeamSize(parent1.getTeamSize() + parent2.getTeamSize());
+			parent2.setLeader(parent1);
 		}else{
-			parent2.rank = parent1.rank + parent2.rank; 
-			parent1.parent = parent2;
+			parent2.setTeamSize(parent1.getTeamSize() + parent2.getTeamSize());
+			parent1.setLeader(parent2);
 		}
 	}
 	
 	
 	public static void main(String[] args) {
-//		Scanner in = InputUtil.getScanner();
-		Scanner in = new Scanner(System.in);
+		Scanner in = InputUtil.getScanner();
+//		Scanner in = new Scanner(System.in);
 		int TC = in.nextInt();
 		
 		for (int i = 0; i < TC; i++) {
@@ -126,7 +126,7 @@ public class VirtualFriends {
 				String key1 = in.next(); 
 				String key2 = in.next();
 				makeSet(key1, key2);
-				System.out.println(getValueByKey(key1).getParent().getRank());
+				System.out.println(getValueByKey(key1).getLeader().getTeamSize());
 			}
 		}
 		
