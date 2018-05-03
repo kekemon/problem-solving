@@ -22,6 +22,8 @@ public class LinkListPrint {
 			return node;
 		}
 	}
+
+	
 	
 	static void print(Node head){
 		Node root = head;
@@ -44,15 +46,14 @@ public class LinkListPrint {
 	    return val;
 	}
 	
-	boolean hasCycle(Node head) {
+	static boolean hasCycle(Node head) {
 		Node fast = head;
-		
 		while(fast != null && fast.next != null){
-			head = head.next;
-			fast = fast.next.next;
-			if(head.equals(fast)){
+			if(head.equals(fast.next)){
 				return true;
 			}
+			head = head.next;
+			fast = fast.next.next;
 		}
 		return false;
 
@@ -62,8 +63,9 @@ public class LinkListPrint {
 	public static void main(String[] args) {
 		
 		Node head = new Node(2);
-		head.append(1).append(3).append(5).append(6);
+		head.next = head;
+//		head.append(1);//.append(3).append(5).append(6);
 //		head = null;
-		System.out.println(GetNode(head, 0));
+		System.out.println(hasCycle(head));
 	}
 }
