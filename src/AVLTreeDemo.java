@@ -1,4 +1,3 @@
-
 public class AVLTreeDemo {
 	static class Node{
 		private int value;
@@ -8,7 +7,7 @@ public class AVLTreeDemo {
 		
 		public Node(int value) {
 			setValue(value);
-			setHeight(0);
+			setHeight(1);
 			setLeft(null);
 			setRight(null);
 		}
@@ -45,6 +44,18 @@ public class AVLTreeDemo {
 			this.height = height;
 		}
 
+		public Node getNearest(){
+			Node node = left;
+			Node tmp = node;
+			
+			while(node != null){
+				tmp = node;
+				node = node.right;
+			}
+			
+			return tmp;
+		}
+		
 		private int getBalance(){
 			if(left != null && right != null) return left.getHeight() - right.getHeight();
 			if(left != null) return left.getHeight();
@@ -59,7 +70,7 @@ public class AVLTreeDemo {
 			if(left != null) leftHeight = left.getHeight();
 			if(right != null) rightHeight = right.getHeight();
 			
-			setHeight(rightHeight>leftHeight ? rightHeight : leftHeight);
+			setHeight(1 + (rightHeight > leftHeight ? rightHeight : leftHeight));
 		}
 		
 		public Node insert(int value) {
@@ -77,16 +88,44 @@ public class AVLTreeDemo {
 					left = new Node(value);
 				}
 			}else{
-				//No duplicate allowed
 				return this;
 			}
 			
 			//updating height while backtracking.
 			updateHeight();
 			
+			//balancing while backtracking.
 			return balanceInsert(value);
 		}
 
+		public Node delete(int value) {
+			if(this.value < value){
+				if(right != null){
+					right = right.delete(value);
+				}
+			}else if(this.value > value){
+				if(left != null){
+					left = left.delete(value);
+				}
+			}else{
+				if(left == null && right == null){
+					return null;
+				}else if(right == null){
+					return left;
+				}else if(left == null){
+					return right;
+				}else{
+					Node nearest = getNearest();
+					delete(nearest.getValue());
+					this.value = nearest.getValue();
+				}
+			}
+			
+			updateHeight();
+			
+			return balanceDelete(value);
+		}
+		
 		private Node balanceInsert(int value) {
 			//balancing tree while backtracking.
 			int balance = getBalance();
@@ -117,20 +156,62 @@ public class AVLTreeDemo {
 			return this;
 		}
 
+		private Node balanceDelete(int value2) {
+			int balance = getBalance();
+			
+			if(balance > 1 && left.getBalance() >= 0){
+				return rotateRight();
+			}
+			
+			if(balance > 1 && left.getBalance() < 0){
+				left = left.rotateLeft();
+				return rotateRight();
+			}
+			
+			if(balance < -1 && right.getBalance() <= 0){
+				return rotateLeft();
+			}
+			
+			if(balance < -1 && right.getBalance() > 0){
+				right = right.rotateRight();
+				return rotateLeft();
+			}
+			
+			return this;
+		}
+		
 		/*
 	     y                               x
         / \     Right Rotation          /  \
-       x   T3   – – – – – – – >        T1   y 
+       x   T3   - - - - - - --> 	   T1   y 
       / \       < - - - - - - -            / \
      T1  T2     Left Rotation            T2  T3
 		*/
 		
 		private Node rotateLeft() {
-			return this;
+			Node y = right;
+			Node T2 = y.left;
+			
+			y.left = this;
+			right = T2;
+		
+			this.updateHeight();
+			y.updateHeight();
+			
+			return y;
 		}
 		
 		private Node rotateRight() {
-			return this;
+			Node x = left;
+			Node T2 = x.right;
+			
+			x.right = this;
+			left = T2;
+			
+			this.updateHeight();
+			x.updateHeight();
+			
+			return x;
 		}
 		
 		public void print(){
@@ -155,6 +236,12 @@ public class AVLTreeDemo {
 			}
 		}
 		
+		public void delete(int value){
+			if(root != null){
+				root = root.delete(value);
+			}
+		}
+		
 		public void print(){
 			if(root != null){
 				System.out.println();
@@ -174,6 +261,9 @@ public class AVLTreeDemo {
         avTree.insert(60);
         avTree.insert(70);
 		
+		avTree.print();
+		
+		avTree.delete(60);
 		avTree.print();
 	}
 
