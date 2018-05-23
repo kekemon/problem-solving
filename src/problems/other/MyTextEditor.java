@@ -1,11 +1,11 @@
 package problems.other;
-public class TextEditor {
+public class MyTextEditor {
 	private final int TEXT_LENGTH = 20;
 	private int start;
 	private int end;
 	private char[] text;
 	
-	public TextEditor() {
+	public MyTextEditor() {
 		text = new char[TEXT_LENGTH];
 		start = 0;
 		end = TEXT_LENGTH - 1;

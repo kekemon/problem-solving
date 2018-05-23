@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 
-public class AlienLanguage {
+public class Language {
 	final static int WORD_LENGTH = 6;
 	final static int LETTER_LENGTH = 256;
 	static class Dictionary{

@@ -2,3 +2,6 @@ https://uva.onlinejudge.org/external/12/1205.pdf
 https://uva.onlinejudge.org/external/115/11504.pdf
 https://uva.onlinejudge.org/external/100/10074.pdf
 https://www.hackerrank.com/challenges/minimum-average-waiting-time/problem
+Big integer division
+Pattern matching
+Travelling salesman
