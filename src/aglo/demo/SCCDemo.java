@@ -1,5 +1,5 @@
 
-public class SCDemo {
+public class SCCDemo {
 
 	int MAX_NODE = 100000;
 	
